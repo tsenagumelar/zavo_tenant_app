@@ -1,10 +1,19 @@
 {
   "expo": {
-    "name": "zavo_tenant_apps",
+    "name": "Zavo Tenant",
     "slug": "zavo_tenant_apps",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F7F9FC",
+      "dark": {
+        "image": "./assets/images/splash.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "icon": "./assets/images/splash.png",
     "scheme": "zavotenantapps",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -28,12 +37,13 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
