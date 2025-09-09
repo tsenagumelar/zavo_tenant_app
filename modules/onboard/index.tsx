@@ -5,7 +5,11 @@ import useHooks from "./hooks";
 export default function OnboardingScreen() {
   const { datas, methods } = useHooks();
 
-  const renderItem = ({ item }: { item: (typeof datas.slides)[number] }) => (
+  const renderItem = ({
+    item,
+  }: {
+    item: (typeof datas.ONBOARDING_SLIDES)[number];
+  }) => (
     <View
       style={{ width: datas.width }}
       className="flex-1 items-center justify-center bg-white px-5 gap-4"
@@ -36,7 +40,7 @@ export default function OnboardingScreen() {
 
       <FlatList
         ref={datas.listRef}
-        data={datas.slides}
+        data={datas.ONBOARDING_SLIDES}
         renderItem={renderItem}
         keyExtractor={(it) => it.id}
         horizontal
@@ -48,7 +52,7 @@ export default function OnboardingScreen() {
 
       <View className="absolute inset-x-0 bottom-10 items-center space-y-4">
         <View className="flex-row gap-2">
-          {datas.slides.map((_, i) => (
+          {datas.ONBOARDING_SLIDES.map((_, i) => (
             <View
               key={i}
               className={[
