@@ -1,41 +1,45 @@
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { Tabs } from "expo-router";
-import React from "react";
-import { Platform, Text } from "react-native";
+import {
+  House,
+  Menu as MenuIcon,
+  MessageSquare,
+  ReceiptText,
+} from "lucide-react-native";
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
-      }}
-    >
+    <Tabs screenOptions={{ headerShown: false }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <Text className="text-xl font-semibold">👋</Text>
+          title: "Beranda",
+          tabBarIcon: ({ color, size }) => <House color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="transactions/index"
+        options={{
+          title: "Transaksi",
+          tabBarIcon: ({ color, size }) => (
+            <ReceiptText color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="messages/index"
         options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <Text className="text-xl font-semibold">👋</Text>
+          title: "Pesan",
+          tabBarIcon: ({ color, size }) => (
+            <MessageSquare color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="menu/index"
+        options={{
+          title: "Menu",
+          tabBarIcon: ({ color, size }) => (
+            <MenuIcon color={color} size={size} />
           ),
         }}
       />

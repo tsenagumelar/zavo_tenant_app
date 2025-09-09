@@ -15,6 +15,7 @@ import { useEffect } from "react";
 
 import { config } from "@gluestack-ui/config";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import "../global.css";
@@ -37,19 +38,23 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <GluestackUIProvider config={config}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            animation: "fade",
-          }}
+    <SafeAreaProvider>
+      <GluestackUIProvider config={config}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-      </ThemeProvider>
-    </GluestackUIProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              animation: "fade",
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+        </ThemeProvider>
+      </GluestackUIProvider>
+    </SafeAreaProvider>
   );
 }
