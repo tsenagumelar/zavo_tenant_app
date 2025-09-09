@@ -1,66 +1,97 @@
 import Screen from "@/components/layout/Screen";
+import { Card } from "@/components/ui/Card";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
+function currency(n: number) {
+  return "Rp" + n.toLocaleString("id-ID");
+}
+
 export default function CheckoutConfirm() {
+  const router = useRouter();
+  const { billId } = useLocalSearchParams<{ billId?: string }>();
+  // mock amount + admin
+  const totalTagihan = billId?.includes("pay")
+    ? 1552668
+    : billId?.includes("clean")
+    ? 15000
+    : 20000;
+  const biayaAdmin = 2500;
+  const totalBayar = totalTagihan + biayaAdmin;
+
   return (
     <Screen>
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
         <Text style={{ fontSize: 18, fontWeight: "700" }}>
           Konfirmasi Pembayaranmu
         </Text>
 
-        <View
-          style={{
-            padding: 12,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-            gap: 6,
-          }}
-        >
-          <Text style={{ fontWeight: "700" }}>Ringkasan Pembayaran</Text>
-          <Text>Sewa Unit Unit 15B-Studio — Rp16.000.000</Text>
-          <Text>Kebersihan 12x — Rp15.000</Text>
-          <Text>Parkir 12x — Rp20.000</Text>
-        </View>
+        <Card>
+          <Text style={{ fontWeight: "700", marginBottom: 6 }}>
+            Ringkasan Pembayaran
+          </Text>
+          <Text style={{ fontSize: 24, fontWeight: "800" }}>
+            {billId?.includes("pay") ? "Tagihan PayLater" : "Tagihan"}
+          </Text>
+          <Text style={{ fontSize: 24, fontWeight: "800" }}>
+            {currency(totalBayar)}
+          </Text>
+        </Card>
 
-        <View
-          style={{
-            padding: 12,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-            gap: 8,
-          }}
-        >
-          <Text style={{ fontWeight: "700" }}>Pilih Metode Pembayaran</Text>
-          <Text style={{ color: "#6B7280" }}>
+        <Card>
+          <Text style={{ fontWeight: "700", marginBottom: 6 }}>
+            Pilih Metode Pembayaran
+          </Text>
+          <Text style={{ color: "#6B7280", marginBottom: 8 }}>
             Semua transaksi aman dan terenkripsi.
           </Text>
-          <Text>- Transfer Bank (Pilih Bank)</Text>
-          <Text>- E-Wallet (Tambah Dompet Digital)</Text>
-          <Text>- Paylater (Lakukan Verifikasi Data Dirimu)</Text>
-          <Text>- Kartu kredit/debit (Tambah Kartu Kredit)</Text>
-        </View>
-
-        <View
-          style={{
-            padding: 12,
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-            gap: 4,
-          }}
-        >
-          <Text>Total Biaya Sewa Rp16.000.000</Text>
-          <Text>Biaya Kebersihan Rp180.000</Text>
-          <Text style={{ fontSize: 16, fontWeight: "700", marginTop: 4 }}>
-            Total Pembayaran Rp16.420.000
+          <Text>
+            Transfer Bank{"\n"}
+            <Text style={{ color: "#6B7280" }}>Bank Mandiri</Text>
           </Text>
-        </View>
+          <View style={{ height: 8 }} />
+          <Text>
+            E-Wallet{"\n"}
+            <Text style={{ color: "#6B7280" }}>Tambah Dompet Digital</Text>
+          </Text>
+          <View style={{ height: 8 }} />
+          <Text>
+            Paylater{"\n"}
+            <Text style={{ color: "#6B7280" }}>
+              Lakukan Verifikasi Data Dirimu
+            </Text>
+          </Text>
+          <View style={{ height: 8 }} />
+          <Text>
+            Kartu kredit/debit{"\n"}
+            <Text style={{ color: "#6B7280" }}>Tambah Kartu Kredit</Text>
+          </Text>
+        </Card>
+
+        <Card>
+          <Text style={{ fontWeight: "700", marginBottom: 6 }}>
+            Cek ringkasan transaksimu
+          </Text>
+          <Text>Total Tagihan {currency(totalTagihan)}</Text>
+          <Text>Biaya Admin {currency(biayaAdmin)}</Text>
+          <Text style={{ fontSize: 16, fontWeight: "800", marginTop: 6 }}>
+            Total Pembayaran{"\n"}
+            {currency(totalBayar)}
+          </Text>
+        </Card>
 
         <TouchableOpacity
-          style={{ backgroundColor: "#2563EB", padding: 14, borderRadius: 12 }}
+          onPress={() =>
+            router.push({
+              pathname: "/checkout/upload-proof",
+              params: { total: totalBayar },
+            })
+          }
+          style={{
+            backgroundColor: "#2563EB",
+            paddingVertical: 14,
+            borderRadius: 12,
+          }}
         >
           <Text
             style={{ textAlign: "center", color: "#fff", fontWeight: "700" }}

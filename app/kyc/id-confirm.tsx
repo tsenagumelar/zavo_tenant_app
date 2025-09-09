@@ -43,7 +43,7 @@ export default function KtpConfirm() {
       Alert.alert("NIK sudah terdaftar", "Hubungi CS atau cek Pusat Bantuan.");
       return;
     }
-    router.push("/home");
+    router.push("/kyc/selfie");
   };
 
   return (

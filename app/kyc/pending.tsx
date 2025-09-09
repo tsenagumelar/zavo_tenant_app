@@ -12,7 +12,7 @@ export default function KycPending() {
         Silakan menunggu sebentar, verifikasi kamu sedang dicek oleh tim kami.
       </Text>
       <TouchableOpacity
-        onPress={() => router.replace("/(tabs)")}
+        onPress={() => router.replace("/(tabs)/home")}
         style={{ backgroundColor: "#2563EB", padding: 14, borderRadius: 12 }}
       >
         <Text style={{ color: "#fff", textAlign: "center", fontWeight: "600" }}>
