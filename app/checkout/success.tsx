@@ -1,7 +1,12 @@
+// app/checkout/success.tsx
 import Screen from "@/components/layout/Screen";
 import { Card } from "@/components/ui/Card";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+
+function currency(n: number) {
+  return "Rp" + Number(n || 0).toLocaleString("id-ID");
+}
 
 export default function PaymentSuccess() {
   const router = useRouter();
@@ -9,60 +14,90 @@ export default function PaymentSuccess() {
     total?: string;
     txn?: string;
   }>();
+  const amount = Number(total ?? 0);
+
   return (
     <Screen>
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
-        <Text style={{ fontSize: 18, fontWeight: "700" }}>
-          Pembayaran Berhasil!
-        </Text>
-
-        <Card style={{ alignItems: "center", gap: 6 }}>
-          <Text style={{ fontSize: 24, fontWeight: "800" }}>
-            {Number(total ?? 0).toLocaleString("id-ID", {
-              style: "currency",
-              currency: "IDR",
-            })}
-          </Text>
-          <Text>20 April 2025</Text>
-          <Text>Nomor Transaksi {txn}</Text>
-          <Text>Jenis Tagihan Sewa Apartemen</Text>
-          <Text>Metode Pembayaran Bank Transfer</Text>
-          <Text style={{ color: "#16A34A" }}>Status Dikonfirmasi</Text>
-          <Text style={{ textAlign: "center", color: "#6B7280", marginTop: 8 }}>
-            Anda dapat mengunduh faktur dari Riwayat Pembayaran kapan saja.
-          </Text>
-        </Card>
-
-        <TouchableOpacity
-          onPress={() => router.replace("/bills")}
-          style={{
-            backgroundColor: "#111827",
-            paddingVertical: 12,
-            borderRadius: 12,
-          }}
-        >
-          <Text
-            style={{ color: "#fff", textAlign: "center", fontWeight: "700" }}
-          >
-            List Tagihan
-          </Text>
+      {/* Header */}
+      <View className="px-5 pt-2 pb-3 bg-blue-50/40 flex-row items-center">
+        <TouchableOpacity onPress={() => router.back()} className="pr-3 py-2">
+          <Text className="text-2xl">‹</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() =>
-            router.push({ pathname: "/invoice/[txn]", params: { txn } })
-          }
-          style={{
-            backgroundColor: "#2563EB",
-            paddingVertical: 12,
-            borderRadius: 12,
-          }}
-        >
-          <Text
-            style={{ color: "#fff", textAlign: "center", fontWeight: "700" }}
+        <Text className="text-base font-semibold">Pembayaran</Text>
+      </View>
+
+      <ScrollView
+        className="flex-1 bg-white"
+        contentContainerStyle={{ paddingBottom: 28 }}
+      >
+        <View className="px-4 pt-5 space-y-4">
+          {/* Icon + Title */}
+          <View className="items-center">
+            <View className="w-16 h-16 rounded-2xl bg-blue-100 items-center justify-center">
+              <Text className="text-2xl">✅</Text>
+            </View>
+
+            <Text className="text-xl font-bold mt-3">Pembayaran Berhasil!</Text>
+            <Text className="text-gray-500 mt-1 text-center">
+              Terima kasih, pembayaran Anda telah diterima
+            </Text>
+
+            <Text className="text-red-500 text-2xl font-extrabold mt-2">
+              {currency(amount)}
+            </Text>
+            <Text className="text-gray-500 mt-1">20 April 2025</Text>
+          </View>
+
+          {/* Detail ringkas */}
+          <Card className="rounded-2xl px-4 py-3">
+            <View className="flex-row items-center justify-between py-2">
+              <Text className="text-gray-500">Nomor Transaksi</Text>
+              <Text className="font-medium">{txn}</Text>
+            </View>
+            <View className="border-t border-gray-100" />
+            <View className="flex-row items-center justify-between py-2">
+              <Text className="text-gray-500">Jenis Tagihan</Text>
+              <Text className="font-medium">Sewa Apartemen</Text>
+            </View>
+            <View className="border-t border-gray-100" />
+            <View className="flex-row items-center justify-between py-2">
+              <Text className="text-gray-500">Metode Pembayaran</Text>
+              <Text className="font-medium">Bank Transfer</Text>
+            </View>
+            <View className="border-t border-gray-100" />
+            <View className="flex-row items-center justify-between py-2">
+              <Text className="text-gray-500">Status</Text>
+              <Text className="text-green-600 font-medium">Dikonfirmasi</Text>
+            </View>
+          </Card>
+
+          {/* Info note */}
+          <View className="rounded-2xl bg-blue-50 px-4 py-3">
+            <Text className="text-blue-700">
+              Anda dapat mengunduh faktur dari Riwayat Pembayaran kapan saja.
+            </Text>
+          </View>
+
+          {/* Actions */}
+          <TouchableOpacity
+            onPress={() => router.replace("/bills")}
+            className="bg-blue-600 rounded-2xl py-4 items-center"
           >
-            Detail Faktur
-          </Text>
-        </TouchableOpacity>
+            <Text className="text-white font-semibold">List Tagihan</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/invoice/[txn]",
+                params: { txn: txn ?? "" },
+              })
+            }
+            className="bg-gray-100 rounded-2xl py-4 items-center"
+          >
+            <Text className="text-blue-600 font-semibold">Detail Faktur</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </Screen>
   );

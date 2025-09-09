@@ -1,3 +1,4 @@
+import Screen from "@/components/layout/Screen";
 import { useAuthStore } from "@/stores/auth";
 import {
   Button,
@@ -32,32 +33,36 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 24, gap: 16, justifyContent: "center" }}>
-      <Text style={{ fontSize: 22, fontWeight: "700", textAlign: "center" }}>
-        Daftar Akun Baru
-      </Text>
-      <VStack space="md" mt="$2">
-        <Input>
-          <InputField
-            placeholder="Nama"
-            value={name}
-            onChangeText={setName}
-            autoCapitalize="words"
-          />
-        </Input>
-        <Input>
-          <InputField
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-          />
-        </Input>
-      </VStack>
+    <Screen>
+      <View style={{ flex: 1, padding: 24, gap: 16 }}>
+        <Text style={{ fontSize: 22, fontWeight: "700" }}>
+          Daftar Akun Baru
+        </Text>
+        <VStack space="md" mt="$2">
+          <Text>Nama</Text>
+          <Input>
+            <InputField
+              placeholder="Nama"
+              value={name}
+              onChangeText={setName}
+              autoCapitalize="words"
+            />
+          </Input>
+          <Text>Email</Text>
+          <Input>
+            <InputField
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+          </Input>
+        </VStack>
 
-      <Button onPress={submit} mt="$4">
-        <ButtonText>Daftar Akun</ButtonText>
-      </Button>
-    </View>
+        <Button onPress={submit} mt="$4">
+          <ButtonText>Daftar Akun</ButtonText>
+        </Button>
+      </View>
+    </Screen>
   );
 }

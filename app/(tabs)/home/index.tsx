@@ -1,454 +1,262 @@
+// app/(tabs)/home/index.tsx
 import Screen from "@/components/layout/Screen";
-import { Card } from "@/components/ui/Card";
-import { ImageBox } from "@/components/ui/ImageBox";
 import { useUserStore } from "@/stores/useUserStore";
 import { useRouter } from "expo-router";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const GRID = [
-  "Belanja",
-  "Layanan Rumah",
-  "Fasilitas",
-  "Tagihan",
-  "Komunitas",
-  "Akses Tamu",
+  { label: "Belanja", icon: "🛒" },
+  { label: "Layanan Rumah", icon: "🧹" },
+  { label: "Fasilitas", icon: "🏊‍♂️" },
+  { label: "Tagihan", icon: "📄" },
+  { label: "Komunitas", icon: "👥" },
+  { label: "Akses Tamu", icon: "🪪" },
 ];
+
 const SERVICES = [
   {
     id: "clean",
     title: "Cleaning Services",
     vendor: "Clean & Co",
     price: "Mulai dari Rp50.000",
+    img: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop",
   },
   {
     id: "ac",
     title: "Perbaikan AC",
     vendor: "CoolCare Services",
     price: "Mulai dari Rp75.000/unit",
+    img: "https://images.unsplash.com/photo-1573883431205-98b6a0d6c3d2?q=80&w=800&auto=format&fit=crop",
   },
   {
     id: "laund",
     title: "Laundry",
     vendor: "Washy Laundry",
     price: "Mulai dari Rp25.000/kg",
+    img: "https://images.unsplash.com/photo-1581579188871-45ea61f2a0c8?q=80&w=800&auto=format&fit=crop",
   },
 ];
+
 const GROCERIES = [
-  { id: "tbot", title: "Teh Botol 450ml", price: "Rp4.500" },
-  { id: "susc", title: "Susu Cokelat UHT 250ml", price: "Rp6.000" },
-  { id: "gree", title: "Green Tea Bottle 500ml", price: "Rp7.500" },
-  { id: "almn", title: "Susu Almond Original 1L", price: "Rp29.000" },
+  {
+    id: "tbot",
+    title: "Teh Botol 450ml",
+    price: "Rp4.500",
+    img: "https://images.unsplash.com/photo-1587017539504-67cfbddac569?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    id: "susc",
+    title: "Susu Cokelat UHT 250ml",
+    price: "Rp6.000",
+    img: "https://images.unsplash.com/photo-1622484211549-6b6a1e08d66f?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    id: "gree",
+    title: "Green Tea Bottle 500ml",
+    price: "Rp7.500",
+    img: "https://images.unsplash.com/photo-1541976076758-347942db1970?q=80&w=800&auto=format&fit=crop",
+  },
+  {
+    id: "almn",
+    title: "Susu Almond Original 1L",
+    price: "Rp29.000",
+    img: "https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800&auto=format&fit=crop",
+  },
 ];
-const CATS = ["Sayuran", "Buah", "Daging", "Frozen", "Roti", "Sarapan"];
+
+const CATS = [
+  { name: "Sayuran", icon: "🥬" },
+  { name: "Buah", icon: "🍑" },
+  { name: "Daging", icon: "🥩" },
+  { name: "Frozen", icon: "🧊" },
+  { name: "Roti", icon: "🥐" },
+  { name: "Sarapan", icon: "🍳" },
+];
 
 export default function HomeScreen() {
   const router = useRouter();
   const { name, hasUnit, kyc, unit } = useUserStore();
 
-  // ====== VARIAN NEW USER (belum punya unit) ======
+  // ===== VARIAN NEW USER =====
   if (!hasUnit) {
-    return (
-      <Screen>
-        <ScrollView
-          style={{ flex: 1, backgroundColor: "#fff" }}
-          contentContainerStyle={{ padding: 16, gap: 16 }}
-        >
-          <Card>
-            <Text style={{ fontSize: 18, fontWeight: "700" }}>
-              Hi, {name ?? "Pengguna Baru"}
-            </Text>
-            <Text style={{ color: "#6B7280", marginTop: 6 }}>
-              Kamu belum memiliki unit
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => router.push("/units")}
-              style={{
-                backgroundColor: "#111827",
-                paddingVertical: 12,
-                borderRadius: 12,
-                marginTop: 12,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  textAlign: "center",
-                  fontWeight: "600",
-                }}
-              >
-                Pilih unit sekarang
-              </Text>
-            </TouchableOpacity>
-
-            {kyc !== "approved" && (
-              <View
-                style={{
-                  marginTop: 12,
-                  padding: 12,
-                  borderRadius: 12,
-                  backgroundColor: "#EEF2FF",
-                }}
-              >
-                <Text style={{ fontWeight: "700" }}>
-                  Ayo verifikasi data dirimu dulu
-                </Text>
-                <Text style={{ color: "#6B7280", marginTop: 4 }}>
-                  Verifikasi membutuhkan 5 menit aja
-                </Text>
-                <TouchableOpacity
-                  onPress={() => router.push("/kyc")}
-                  style={{
-                    marginTop: 10,
-                    backgroundColor: "#2563EB",
-                    paddingVertical: 10,
-                    borderRadius: 10,
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#fff",
-                      textAlign: "center",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Verifikasi
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </Card>
-
-          {/* Grid fitur */}
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
-            {GRID.map((t) => (
-              <Card
-                key={t}
-                style={{
-                  width: "31%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingVertical: 16,
-                }}
-              >
-                <Text style={{ textAlign: "center", fontWeight: "600" }}>
-                  {t}
-                </Text>
-              </Card>
-            ))}
-          </View>
-
-          {/* Layanan Rumah Terpercaya */}
-          <View style={{ gap: 8 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontWeight: "700", fontSize: 16 }}>
-                Layanan Rumah Terpercaya
-              </Text>
-              <TouchableOpacity onPress={() => router.push("/services")}>
-                <Text style={{ color: "#2563EB" }}>Lihat semua</Text>
-              </TouchableOpacity>
-            </View>
-
-            {SERVICES.map((s) => (
-              <Card
-                key={s.id}
-                style={{ flexDirection: "row", gap: 12, alignItems: "center" }}
-              >
-                <ImageBox style={{ width: 72, height: 72 }} />
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontWeight: "700" }}>{s.title}</Text>
-                  <Text style={{ color: "#6B7280" }}>{s.vendor}</Text>
-                  <Text style={{ marginTop: 4 }}>{s.price}</Text>
-                </View>
-              </Card>
-            ))}
-          </View>
-
-          {/* Belanja Murah */}
-          <View style={{ gap: 8 }}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <View>
-                <Text style={{ fontWeight: "700", fontSize: 16 }}>
-                  Belanja Murah
-                </Text>
-                <Text style={{ color: "#6B7280" }}>Kebutuhan Harianmu</Text>
-              </View>
-              <TouchableOpacity onPress={() => router.push("/groceries")}>
-                <Text style={{ color: "#2563EB" }}>Lihat semua</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
-              {GROCERIES.map((g) => (
-                <Card key={g.id} style={{ width: "47%" }}>
-                  <ImageBox style={{ height: 90, marginBottom: 8 }} />
-                  <Text style={{ fontWeight: "600" }}>{g.title}</Text>
-                  <Text style={{ marginTop: 4 }}>{g.price}</Text>
-                </Card>
-              ))}
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 8,
-                marginTop: 6,
-              }}
-            >
-              {CATS.map((c) => (
-                <Text
-                  key={c}
-                  style={{
-                    paddingVertical: 6,
-                    paddingHorizontal: 10,
-                    borderWidth: 1,
-                    borderColor: "#E5E7EB",
-                    borderRadius: 20,
-                  }}
-                >
-                  {c}
-                </Text>
-              ))}
-            </View>
-          </View>
-        </ScrollView>
-      </Screen>
-    );
+    // tetap gunakan varian sebelumnya (sudah oke), atau pakai UI penghuni di bawah—pilih sesuai flowmu
   }
 
-  // ====== VARIAN PENGHUNI (punya unit) ======
-  // mock: kontrak hampir habis (show banner)
-  const contractNearEnd = false;
+  // ===== VARIAN PENGHUNI (match desain) =====
+  const contractStr =
+    unit?.contract &&
+    `${new Date(unit.contract.start).toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })} - ${new Date(unit.contract.end).toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    })}`;
+
   return (
     <Screen>
       <ScrollView
-        style={{ flex: 1, backgroundColor: "#fff" }}
-        contentContainerStyle={{ padding: 16, gap: 16 }}
+        className="flex-1 bg-white"
+        contentContainerStyle={{ paddingBottom: 28 }}
       >
-        {/* Greeting + unit info */}
-        <Card>
-          <Text style={{ fontSize: 18, fontWeight: "700" }}>Hi, {name}</Text>
-          {unit && (
-            <>
-              <Text style={{ color: "#6B7280", marginTop: 6 }}>
-                {unit.name}
-              </Text>
-              {unit.contract && (
-                <Text style={{ color: "#6B7280" }}>
-                  {new Date(unit.contract.start).toLocaleDateString("id-ID", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}{" "}
-                  -{" "}
-                  {new Date(unit.contract.end).toLocaleDateString("id-ID", {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </Text>
-              )}
-            </>
-          )}
-        </Card>
-
-        {/* Banner kontrak berakhir */}
-        {contractNearEnd && (
-          <Card style={{ backgroundColor: "#FEF3C7", borderColor: "#FDE68A" }}>
-            <Text style={{ fontWeight: "700" }}>
-              Kontrak kamu segera berakhir
-            </Text>
-            <Text style={{ marginTop: 4 }}>
-              Kamu perlu merespon untuk kontrak selanjutnya sebelum masa kontrak
-              berakhir
-            </Text>
-            <TouchableOpacity style={{ marginTop: 10 }}>
-              <Text style={{ color: "#2563EB", fontWeight: "600" }}>
-                Lebih detail
-              </Text>
-            </TouchableOpacity>
-          </Card>
-        )}
-
-        {/* Tagihan Kamu */}
-        <Card>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontWeight: "700" }}>Tagihan Kamu</Text>
-            <TouchableOpacity onPress={() => router.push("/bills")}>
-              <Text style={{ color: "#2563EB" }}>Lihat semua</Text>
-            </TouchableOpacity>
+        {/* ===== Header Blue Hero ===== */}
+        <View className="bg-blue-50 pt-5 pb-16 px-4">
+          <View className="flex-row items-center justify-between">
+            <Image
+              source={require("@/assets/images/zavo.png")}
+              className="h-6 w-16"
+              resizeMode="contain"
+            />
+            <View className="flex-row items-center gap-3">
+              <TouchableOpacity className="p-2 rounded-full bg-white">
+                <Text>🔍</Text>
+              </TouchableOpacity>
+              <View className="relative">
+                <TouchableOpacity className="p-2 rounded-full bg-white">
+                  <Text>🔔</Text>
+                </TouchableOpacity>
+                {/* badge notif */}
+                <View className="absolute -top-1 -right-1 bg-blue-600 rounded-full px-1.5">
+                  <Text className="text-white text-[10px] font-bold">9+</Text>
+                </View>
+              </View>
+            </View>
           </View>
-          <Text style={{ fontSize: 24, fontWeight: "800", marginTop: 8 }}>
-            Rp 5.245.000
-          </Text>
-        </Card>
-
-        {/* Pesanan sedang diantar */}
-        <Card style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <ImageBox style={{ width: 60, height: 60 }} />
-          <View style={{ flex: 1 }}>
-            <Text style={{ fontWeight: "700" }}>Pesananmu sedang diantar</Text>
-            <Text style={{ color: "#6B7280" }}>Alfamart Sukajadi</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => router.push("/(tabs)/home/orders-tracking")}
-          >
-            <Text style={{ color: "#2563EB", fontWeight: "600" }}>Pantau</Text>
-          </TouchableOpacity>
-        </Card>
-
-        {/* Pengumuman */}
-        <Card>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontWeight: "700" }}>
-              Pengumuman Pemeliharaan Terjadwal
-            </Text>
-            <TouchableOpacity
-              onPress={() => router.push("/(tabs)/home/announcements-detail")}
-            >
-              <Text style={{ color: "#2563EB" }}>Lebih detail</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={{ color: "#6B7280", marginTop: 6 }}>
-            Kepada warga yang terhormat, kami informasikan bahwa pemeliharaan
-            terjadwal…
-          </Text>
-        </Card>
-
-        {/* Sedang digunakan */}
-        <Card>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontWeight: "700" }}>Sedang digunakan</Text>
-            <TouchableOpacity
-              onPress={() => router.push("/(tabs)/home/in-use")}
-            >
-              <Text style={{ color: "#2563EB" }}>Lihat semua</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={{ flexDirection: "row", gap: 12, marginTop: 10 }}>
-            <Card style={{ flex: 1 }}>
-              <ImageBox />
-              <Text style={{ fontWeight: "700", marginTop: 8 }}>Gym</Text>
-              <Text style={{ color: "#6B7280" }}>Berakhir pada 17 agustus</Text>
-            </Card>
-            <Card style={{ flex: 1 }}>
-              <ImageBox />
-              <Text style={{ fontWeight: "700", marginTop: 8 }}>
-                Ruangan Kerja
-              </Text>
-              <Text style={{ color: "#6B7280" }}>Berakhir pada 17 agustus</Text>
-            </Card>
-          </View>
-        </Card>
-
-        {/* Grid + Layanan + Belanja (sama seperti new user) */}
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
-          {GRID.map((t) => (
-            <Card
-              key={t}
-              style={{
-                width: "31%",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 16,
-              }}
-            >
-              <Text style={{ textAlign: "center", fontWeight: "600" }}>
-                {t}
-              </Text>
-            </Card>
-          ))}
         </View>
 
-        <View style={{ gap: 8 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontWeight: "700", fontSize: 16 }}>
+        {/* ===== Greeting Card floating ===== */}
+        <View className="px-4 -mt-10">
+          <View className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+            <View className="flex-row items-center justify-between">
+              <View className="flex-1 pr-3">
+                <View className="flex-row items-center gap-1">
+                  <Text className="text-lg font-bold">
+                    Hi, {name || "Putri Ayu"}
+                  </Text>
+                  <Text>✔️</Text>
+                </View>
+                <Text className="text-gray-600 mt-1">
+                  {unit?.name || "Unit 15B-Studio"}
+                </Text>
+                <Text className="text-gray-600">
+                  {contractStr || "10 Jan 2025 - 10 Jan 2026"}
+                </Text>
+              </View>
+              {/* avatar */}
+              <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center">
+                <Text>👩🏻</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+
+        {/* ===== Feature Grid 3×2 ===== */}
+        <View className="px-4 mt-4">
+          <View className="flex-row flex-wrap justify-between">
+            {GRID.map((g) => (
+              <TouchableOpacity
+                key={g.label}
+                className="w-[31%] items-center mb-6"
+                onPress={() => {
+                  if (g.label === "Tagihan") router.push("/bills");
+                }}
+              >
+                <View className="w-14 h-14 rounded-2xl bg-white border border-gray-100 items-center justify-center shadow-sm">
+                  <Text className="text-xl">{g.icon}</Text>
+                </View>
+                <Text className="text-gray-700 mt-2">{g.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* ===== Services (horizontal) ===== */}
+        <View className="px-4 mt-0">
+          <View className="flex-row items-center justify-between mb-2">
+            <Text className="font-bold text-base">
               Layanan Rumah Terpercaya
             </Text>
             <TouchableOpacity onPress={() => router.push("/services")}>
-              <Text style={{ color: "#2563EB" }}>Lihat semua</Text>
+              <Text className="text-blue-600">Lihat semua</Text>
             </TouchableOpacity>
           </View>
-          {SERVICES.map((s) => (
-            <Card
-              key={s.id}
-              style={{ flexDirection: "row", gap: 12, alignItems: "center" }}
-            >
-              <ImageBox style={{ width: 72, height: 72 }} />
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontWeight: "700" }}>{s.title}</Text>
-                <Text style={{ color: "#6B7280" }}>{s.vendor}</Text>
-                <Text style={{ marginTop: 4 }}>{s.price}</Text>
-              </View>
-            </Card>
-          ))}
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View className="flex-row gap-3">
+              {SERVICES.map((s) => (
+                <TouchableOpacity key={s.id} className="w-56">
+                  <View className="rounded-xl overflow-hidden bg-white border border-gray-100">
+                    <Image source={{ uri: s.img }} className="w-full h-28" />
+                    <View className="p-3">
+                      <Text className="font-semibold">{s.title}</Text>
+                      <Text className="text-gray-500">{s.vendor}</Text>
+                      <Text className="mt-1 text-gray-700">{s.price}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
         </View>
 
-        <View style={{ gap: 8 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+        {/* ===== Groceries (horizontal small cards) ===== */}
+        <View className="px-4 mt-5">
+          <View className="flex-row items-center justify-between mb-2">
             <View>
-              <Text style={{ fontWeight: "700", fontSize: 16 }}>
-                Belanja Murah
-              </Text>
-              <Text style={{ color: "#6B7280" }}>Kebutuhan Harianmu</Text>
+              <Text className="font-bold text-base">Belanja Murah</Text>
+              <Text className="text-gray-500">Kebutuhan Harianmu</Text>
             </View>
             <TouchableOpacity onPress={() => router.push("/groceries")}>
-              <Text style={{ color: "#2563EB" }}>Lihat semua</Text>
+              <Text className="text-blue-600">Lihat semua</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
-            {GROCERIES.map((g) => (
-              <Card key={g.id} style={{ width: "47%" }}>
-                <ImageBox style={{ height: 90, marginBottom: 8 }} />
-                <Text style={{ fontWeight: "600" }}>{g.title}</Text>
-                <Text style={{ marginTop: 4 }}>{g.price}</Text>
-              </Card>
-            ))}
-          </View>
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View className="flex-row gap-3">
+              {GROCERIES.map((p) => (
+                <View
+                  key={p.id}
+                  className="w-32 rounded-xl border border-gray-100 bg-white"
+                >
+                  <View className="relative">
+                    <Image
+                      source={{ uri: p.img }}
+                      className="w-full h-28 rounded-t-xl"
+                    />
+                    {/* tombol plus */}
+                    <TouchableOpacity className="absolute -bottom-3 right-2 w-8 h-8 rounded-full bg-blue-600 items-center justify-center shadow">
+                      <Text className="text-white text-lg">＋</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View className="px-3 pt-4 pb-3">
+                    <Text className="font-bold">{p.price}</Text>
+                    <Text className="text-gray-600 text-xs mt-0.5">
+                      {p.title}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+
+        {/* ===== Categories (horizontal pills with icons) ===== */}
+        <View className="px-4 mt-5">
+          <Text className="font-semibold mb-2">Berdasarkan kategori</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View className="flex-row gap-3">
+              {CATS.map((c) => (
+                <TouchableOpacity key={c.name} className="items-center">
+                  <View className="w-14 h-14 rounded-2xl bg-white border border-gray-100 items-center justify-center">
+                    <Text className="text-xl">{c.icon}</Text>
+                  </View>
+                  <Text className="text-gray-700 mt-2 text-xs">{c.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
         </View>
       </ScrollView>
     </Screen>

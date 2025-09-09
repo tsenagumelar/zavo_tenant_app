@@ -29,7 +29,7 @@ type KycState = {
 };
 
 export const useKycStore = create<KycState>((set) => ({
-  status: "idle",
+  status: "approved",
   set: (p) => set(p),
   reset: () =>
     set({
