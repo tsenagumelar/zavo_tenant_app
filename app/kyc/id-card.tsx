@@ -1,118 +1,79 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useKycStore } from "@/stores/useKycStore";
-import { CameraView, useCameraPermissions } from "expo-camera";
+// app/kyc/id-card.tsx
+import { Alert, AlertText, Button, ButtonText } from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView, Text, View } from "react-native";
 
-export default function KtpCapture() {
+export default function KycIdCard() {
   const router = useRouter();
-  const set = useKycStore((s) => s.set);
-  const [permission, requestPermission] = useCameraPermissions();
-  const camRef = useRef<CameraView>(null);
-  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    if (!permission?.granted) requestPermission();
-  }, [permission]);
-
-  const take = async () => {
-    try {
-      const photo = await camRef.current?.takePictureAsync({
-        quality: 0.9,
-        skipProcessing: true,
-      });
-      if (!photo?.uri) throw new Error("No photo");
-      set({ idPhotoUri: photo.uri });
-      router.push("/kyc/id-confirm");
-    } catch (e) {
-      Alert.alert(
-        "Foto KTP tidak berhasil",
-        "Coba lagi, pastikan tidak ada pantulan cahaya."
-      );
-    }
+  const openCamera = () => {
+    // arahkan ke halaman kamera / aksi capture
+    router.push("/kyc/take-id-card"); // ganti sesuai rute kamera kamu
   };
 
-  if (!permission?.granted) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 24,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "600",
-            textAlign: "center",
-            marginBottom: 8,
-          }}
-        >
-          Izinkan kami mengakses kamera?
-        </Text>
-        <Text
-          style={{ textAlign: "center", color: "#6B7280", marginBottom: 16 }}
-        >
-          Kami butuh akses untuk mengambil foto e-KTP.
-        </Text>
-        <TouchableOpacity
-          onPress={requestPermission}
-          style={{ backgroundColor: "#2563EB", padding: 12, borderRadius: 12 }}
-        >
-          <Text style={{ color: "#fff", fontWeight: "600" }}>Ya, Izinkan</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   return (
-    <View style={{ flex: 1 }}>
-      <CameraView
-        ref={camRef}
-        style={{ flex: 1 }}
-        onCameraReady={() => setReady(true)}
-      />
-      {/* Overlay kotak bantu framing */}
-      <View
-        pointerEvents="none"
-        style={{
-          position: "absolute",
-          top: 100,
-          left: 24,
-          right: 24,
-          height: 200,
-          borderWidth: 2,
-          borderColor: "#FFFFFF99",
-          borderRadius: 12,
-        }}
-      />
-      <View style={{ position: "absolute", bottom: 32, left: 24, right: 24 }}>
-        <Text style={{ textAlign: "center", color: "#fff", marginBottom: 12 }}>
-          Posisikan e-KTP di dalam kotak & hindari pantulan.
+    <SafeAreaView className="flex-1 bg-white">
+      {/* Header back minimal */}
+      <View className="px-4 pt-3 pb-2">
+        <Text onPress={() => router.back()} className="text-2xl leading-none">
+          ‹
         </Text>
-        <TouchableOpacity
-          disabled={!ready}
-          onPress={take}
-          style={{ backgroundColor: "#2563EB", padding: 14, borderRadius: 50 }}
-        >
-          <Text
-            style={{ color: "#fff", fontWeight: "700", textAlign: "center" }}
-          >
-            Ambil Foto
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => router.push("kyc/guide-id")}
-          style={{ padding: 12 }}
-        >
-          <Text style={{ color: "#fff", textAlign: "center" }}>
-            Panduan foto e-KTP
-          </Text>
-        </TouchableOpacity>
       </View>
-    </View>
+
+      <View className="flex-1 px-5 mt-10">
+        {/* Step indicator */}
+        <Text className="text-gray-500 text-sm text-center">1 dari 2</Text>
+
+        {/* Title */}
+        <Text className="text-[22px] font-bold text-gray-900 text-center mt-5">
+          Ambil E-KTP Kamu
+        </Text>
+
+        {/* Sub */}
+        <Text className="text-gray-600 text-center mt-5">
+          Data kamu hanya untuk proses verifikasi. Data akan tersimpan dan
+          terlindungi dengan aman.
+        </Text>
+
+        {/* Info banner */}
+        <Alert className="mt-10 bg-blue-50 rounded-2xl px-4 py-3">
+          <View className="flex-row items-start">
+            {/* <AlertIcon as={Icon} className="mt-0.5" asChild>
+              <Info color="#2563EB" size={18} />
+            </AlertIcon> */}
+            <AlertText className="text-[13px] text-gray-700 ml-2">
+              Pastikan NIK dari E-KTP kamu belum pernah didaftarkan sebelumnya.
+            </AlertText>
+          </View>
+        </Alert>
+
+        {/* Illustration / frame camera guide */}
+        <View className="mt-16 items-center">
+          <View className="w-full rounded-3xl border border-gray-200 p-4">
+            <View className="w-full h-52 rounded-2xl bg-gray-100 items-center justify-center">
+              {/* Placeholder ilustrasi: ganti dengan gambar kamu */}
+              <View className="w-64 h-40 bg-white rounded-xl items-center justify-center shadow">
+                <View className="w-16 h-12 bg-red-400 rounded-md absolute right-3 top-3" />
+              </View>
+              <Text className="text-gray-500 text-center mt-3 px-6 text-xs">
+                Posisikan e-KTP di dalam kotak dan pastikan tidak ada pantulan
+                cahaya
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {/* Bottom button */}
+      <View className="px-5 pb-8">
+        <Button
+          onPress={openCamera}
+          size="lg"
+          className="bg-blue-600 rounded-2xl h-14"
+        >
+          <ButtonText className="font-semibold">Buka Kamera</ButtonText>
+        </Button>
+      </View>
+    </SafeAreaView>
   );
 }

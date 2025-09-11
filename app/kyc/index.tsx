@@ -1,7 +1,7 @@
 // app/kyc/index.tsx
 import { useKycStore } from "@/stores/useKycStore";
 import { useRouter } from "expo-router";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function KycIntro() {
@@ -27,10 +27,13 @@ export default function KycIntro() {
       <View className="flex-1 px-6">
         {/* Icon besar tengah (placeholder); ganti ke assetmu jika ada */}
         <View className="items-center mt-2 mb-6">
-          <View className="w-40 h-40 rounded-full bg-blue-100 items-center justify-center">
+          <View className="w-44 h-44 rounded-full bg-blue-100 items-center justify-center">
             {/* contoh icon png jika sudah ada: */}
-            {/* <Image source={require("@/assets/kyc-badge.png")} className="w-32 h-32" resizeMode="contain" /> */}
-            <Text className="text-5xl">✅</Text>
+            <Image
+              source={require("@/assets/images/check.png")}
+              className="w-36 h-36"
+              resizeMode="contain"
+            />
           </View>
         </View>
 
@@ -42,9 +45,14 @@ export default function KycIntro() {
         {/* Benefit list */}
         <View className="mt-4 rounded-2xl">
           {/* item 1 */}
-          <View className="flex-row items-start gap-3 py-3">
-            <View className="w-9 h-9 rounded-xl bg-amber-50 items-center justify-center">
-              <Text className="text-xl">🔐</Text>
+          <View className="flex-row items-center gap-3 py-5">
+            <View className="w-10 h-10 rounded-xl bg-amber-50 items-center justify-center">
+              {/* <Text className="text-xl">🔐</Text> */}
+              <Image
+                source={require("@/assets/images/lock-key.png")}
+                className="w-10 h-16w-10"
+                resizeMode="contain"
+              />
             </View>
             <View className="flex-1">
               <Text className="font-semibold">Keamanan Terjamin</Text>
@@ -56,9 +64,13 @@ export default function KycIntro() {
           <View className="h-px bg-gray-200" />
 
           {/* item 2 */}
-          <View className="flex-row items-start gap-3 py-3">
-            <View className="w-9 h-9 rounded-xl bg-blue-50 items-center justify-center">
-              <Text className="text-xl">🔑</Text>
+          <View className="flex-row items-center gap-3 py-5">
+            <View className="w-10 h-10 rounded-xl bg-blue-50 items-center justify-center">
+              <Image
+                source={require("@/assets/images/key.png")}
+                className="w-10 h-16w-10"
+                resizeMode="contain"
+              />
             </View>
             <View className="flex-1">
               <Text className="font-semibold">Akses Layanan Mudah</Text>
@@ -70,9 +82,13 @@ export default function KycIntro() {
           <View className="h-px bg-gray-200" />
 
           {/* item 3 */}
-          <View className="flex-row items-start gap-3 py-3">
-            <View className="w-9 h-9 rounded-xl bg-indigo-50 items-center justify-center">
-              <Text className="text-xl">🧾</Text>
+          <View className="flex-row items-center gap-3 py-5">
+            <View className="w-10 h-10 rounded-xl bg-indigo-50 items-center justify-center">
+              <Image
+                source={require("@/assets/images/paper.png")}
+                className="w-10 h-16w-10"
+                resizeMode="contain"
+              />
             </View>
             <View className="flex-1">
               <Text className="font-semibold">Proses Dokumen Cepat</Text>

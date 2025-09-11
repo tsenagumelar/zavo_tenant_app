@@ -1,107 +1,85 @@
-import Screen from "@/components/layout/Screen";
-import { useKycStore } from "@/stores/useKycStore";
+// app/kyc/pending.tsx
+import { Button, ButtonText } from "@gluestack-ui/themed";
 import { useRouter } from "expo-router";
-import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, Text, View } from "react-native";
 
-export default function KycReview() {
+export default function KycPending() {
   const router = useRouter();
-  const { idPhotoUri, selfieUri, nik, address, motherName } = useKycStore();
-  const set = useKycStore((s) => s.set);
-
-  const submit = async () => {
-    // TODO: kirim ke backend untuk OCR+FaceMatch+Dedup
-    // handle error:
-    const limitExceeded = false;
-    if (limitExceeded) {
-      Alert.alert("Limit verifikasi tercapai", "Coba lagi besok ya.");
-      return;
-    }
-    set({ status: "pending" });
-    router.replace("/kyc/pending");
-  };
 
   return (
-    <Screen>
-      <ScrollView contentContainerStyle={{ padding: 24, gap: 16 }}>
-        <Text style={{ fontSize: 22, fontWeight: "700", textAlign: "center" }}>
-          Cek data kamu sebelum lanjut
+    <SafeAreaView className="flex-1 bg-white">
+      {/* Header */}
+      <View className="px-4 pt-3 pb-2">
+        <Text onPress={() => router.back()} className="text-lg">
+          ‹
         </Text>
-        <Text style={{ textAlign: "center", color: "#6B7280" }}>
-          Pastikan semua data sesuai e-KTP.
+        <Text className="text-base font-semibold mt-2">
+          Verifikasi Data Diri
+        </Text>
+      </View>
+
+      {/* Content */}
+      <View className="flex-1 px-6 items-center">
+        {/* Icon besar */}
+        <Image
+          source={require("@/assets/images/check.png")} // ganti dengan asetmu
+          className="h-28 w-28 mt-8"
+          resizeMode="contain"
+        />
+
+        <Text className="text-xl font-bold text-gray-900 text-center mt-6">
+          Verifikasi kamu dalam proses
+        </Text>
+        <Text className="text-gray-600 text-center mt-2">
+          Silahkan menunggu sebentar, verifikasi kamu sedang dicek oleh tim
+          kami.
         </Text>
 
-        <View style={{ gap: 8 }}>
-          {idPhotoUri ? (
+        {/* Benefit cards */}
+        <View className="mt-8 w-full space-y-6 gap-10">
+          <View className="flex-row items-center gap-3">
             <Image
-              source={{ uri: idPhotoUri }}
-              style={{ width: "100%", height: 160, borderRadius: 12 }}
+              source={require("@/assets/images/lock.png")}
+              className="h-10 w-10"
+              resizeMode="contain"
             />
-          ) : null}
-          {selfieUri ? (
+            <View className="flex-1">
+              <Text className="font-semibold text-gray-900">
+                Keamanan Terjamin
+              </Text>
+              <Text className="text-gray-600 text-sm">
+                Identitas penghuni jelas, lingkungan lebih aman.
+              </Text>
+            </View>
+          </View>
+
+          <View className="flex-row items-center gap-3">
             <Image
-              source={{ uri: selfieUri }}
-              style={{ width: "100%", height: 160, borderRadius: 12 }}
+              source={require("@/assets/images/key.png")}
+              className="h-10 w-10"
+              resizeMode="contain"
             />
-          ) : null}
+            <View className="flex-1">
+              <Text className="font-semibold text-gray-900">
+                Akses Layanan Mudah
+              </Text>
+              <Text className="text-gray-600 text-sm">
+                Mudah gunakan layanan tanpa verifikasi ulang.
+              </Text>
+            </View>
+          </View>
         </View>
+      </View>
 
-        <Text style={{ fontWeight: "600" }}>NIK</Text>
-        <TextInput
-          value={nik}
-          editable={false}
-          style={{
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-            borderRadius: 10,
-            padding: 12,
-          }}
-        />
-
-        <Text style={{ fontWeight: "600" }}>Alamat</Text>
-        <TextInput
-          value={address?.alamat}
-          editable={false}
-          style={{
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-            borderRadius: 10,
-            padding: 12,
-          }}
-          multiline
-        />
-
-        <Text style={{ fontWeight: "600" }}>Nama Gadis Ibu Kandung</Text>
-        <TextInput
-          placeholder="Masukkan Nama"
-          value={motherName}
-          onChangeText={(v) => set({ motherName: v })}
-          style={{
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-            borderRadius: 10,
-            padding: 12,
-          }}
-        />
-
-        <TouchableOpacity
-          onPress={submit}
-          style={{ backgroundColor: "#2563EB", padding: 14, borderRadius: 12 }}
+      {/* Bottom button */}
+      <View className="px-6 pb-8">
+        <Button
+          onPress={() => router.replace("/(tabs)/home")}
+          className="bg-blue-600 rounded-2xl h-12"
         >
-          <Text
-            style={{ color: "#fff", textAlign: "center", fontWeight: "600" }}
-          >
-            Konfirmasi
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </Screen>
+          <ButtonText className="font-semibold">Lanjutkan</ButtonText>
+        </Button>
+      </View>
+    </SafeAreaView>
   );
 }

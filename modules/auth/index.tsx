@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import useHooks from "./hooks";
 
-export default function AuthScreen() {
+const AuthScreen = () => {
   const { datas, methods } = useHooks();
 
   return (
@@ -83,4 +83,6 @@ export default function AuthScreen() {
       </Modal>
     </SafeAreaView>
   );
-}
+};
+
+export default AuthScreen;

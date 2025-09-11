@@ -1,14 +1,11 @@
-// app/kyc/id-confirm.tsx
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useKycStore } from "@/stores/useKycStore";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import {
-  Image,
-  Text as RNText,
-  SafeAreaView,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
+
+import { Image, Text as RNText } from "react-native";
 
 import {
   Actionsheet,
@@ -16,95 +13,119 @@ import {
   ActionsheetContent,
   ActionsheetDragIndicator,
   ActionsheetDragIndicatorWrapper,
-  Alert,
-  AlertText,
   Button,
   ButtonText,
 } from "@gluestack-ui/themed";
 
-import { ChevronRight, Info } from "lucide-react-native";
-
-export default function KycIdConfirm() {
+export default function KtpCapture() {
   const router = useRouter();
-  const { idPhotoUri } = useKycStore();
   const set = useKycStore((s) => s.set);
+  const [permission, requestPermission] = useCameraPermissions();
+  const camRef = useRef<CameraView>(null);
+  const [ready, setReady] = useState(false);
   const [openGuide, setOpenGuide] = useState(false);
 
-  const retake = () => {
-    set({ idPhotoUri: undefined });
-    router.replace("/kyc/take-id-card");
+  useEffect(() => {
+    if (!permission?.granted) requestPermission();
+  }, [permission]);
+
+  const take = async () => {
+    try {
+      const photo = await camRef.current?.takePictureAsync({
+        quality: 0.9,
+        skipProcessing: true,
+      });
+      if (!photo?.uri) throw new Error("No photo");
+      set({ idPhotoUri: photo.uri });
+      router.push("/kyc/id-confirm");
+    } catch (e) {
+      Alert.alert(
+        "Foto KTP tidak berhasil",
+        "Coba lagi, pastikan tidak ada pantulan cahaya."
+      );
+    }
   };
-  const next = () => router.push("/kyc/id-data-confirm");
 
-  return (
-    <SafeAreaView className="flex-1 bg-white">
-      {/* Header */}
-      <View className="px-4 pt-3 pb-2">
-        <RNText onPress={() => router.back()} className="text-2xl leading-none">
-          ‹
-        </RNText>
-      </View>
-
-      <View className="flex-1 px-5">
-        <RNText className="text-[22px] font-bold text-gray-900">
-          Konfirmasi Foto KTP
-        </RNText>
-
-        {/* Preview */}
-        <View className="mt-4 rounded-2xl bg-gray-100 p-3">
-          {idPhotoUri ? (
-            <Image
-              source={{ uri: idPhotoUri }}
-              className="w-full h-44 rounded-xl"
-              resizeMode="cover"
-            />
-          ) : (
-            <View className="w-full h-44 rounded-xl bg-gray-200 items-center justify-center">
-              <RNText className="text-gray-500">Belum ada foto KTP</RNText>
-            </View>
-          )}
-        </View>
-
-        {/* Banner info */}
-        <TouchableOpacity
-          activeOpacity={0.85}
-          onPress={() => setOpenGuide(true)}
+  if (!permission?.granted) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 24,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: "600",
+            textAlign: "center",
+            marginBottom: 8,
+          }}
         >
-          <Alert className="mt-4 bg-blue-50 rounded-2xl px-4 py-3">
-            <View className="flex-row items-center justify-between">
-              <View className="flex-row items-center flex-1 pr-2">
-                <Info size={20} color="#2563EB" />
-                {/* bigger */}
-                <AlertText className="ml-2 text-[13px] text-gray-700">
-                  Pastikan e-KTP kamu di dalam kotak dan tidak ada pantulan
-                  cahaya
-                </AlertText>
-              </View>
-              <ChevronRight size={18} color="#9CA3AF" />
-            </View>
-          </Alert>
+          Izinkan kami mengakses kamera?
+        </Text>
+        <Text
+          style={{ textAlign: "center", color: "#6B7280", marginBottom: 16 }}
+        >
+          Kami butuh akses untuk mengambil foto e-KTP.
+        </Text>
+        <TouchableOpacity
+          onPress={requestPermission}
+          style={{ backgroundColor: "#2563EB", padding: 12, borderRadius: 12 }}
+        >
+          <Text style={{ color: "#fff", fontWeight: "600" }}>Ya, Izinkan</Text>
         </TouchableOpacity>
       </View>
+    );
+  }
 
-      {/* Bottom buttons */}
-      <View className="px-5 pb-8 flex-row gap-3">
-        <Button
-          onPress={retake}
-          className="flex-1 bg-gray-100 rounded-2xl h-12"
+  return (
+    <View style={{ flex: 1 }}>
+      <CameraView
+        ref={camRef}
+        style={{ flex: 1 }}
+        onCameraReady={() => setReady(true)}
+      />
+      {/* Overlay kotak bantu framing */}
+      <View
+        pointerEvents="none"
+        style={{
+          position: "absolute",
+          top: 100,
+          left: 24,
+          right: 24,
+          height: 200,
+          borderWidth: 2,
+          borderColor: "#FFFFFF99",
+          borderRadius: 12,
+        }}
+      />
+      <View style={{ position: "absolute", bottom: 32, left: 24, right: 24 }}>
+        <Text style={{ textAlign: "center", color: "#fff", marginBottom: 12 }}>
+          Posisikan e-KTP di dalam kotak & hindari pantulan.
+        </Text>
+        <TouchableOpacity
+          disabled={!ready}
+          onPress={take}
+          style={{ backgroundColor: "#2563EB", padding: 14, borderRadius: 50 }}
         >
-          <ButtonText className="text-gray-800 font-semibold">
-            Ambil Ulang
-          </ButtonText>
-        </Button>
-        <Button
-          onPress={next}
-          isDisabled={!idPhotoUri}
-          className="flex-1 bg-blue-600 rounded-2xl h-12"
+          <Text
+            style={{ color: "#fff", fontWeight: "700", textAlign: "center" }}
+          >
+            Ambil Foto
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ padding: 12 }}
+          onPress={() => setOpenGuide(true)}
         >
-          <ButtonText className="font-semibold">Lanjut</ButtonText>
-        </Button>
+          <Text style={{ color: "#fff", textAlign: "center" }}>
+            Panduan foto e-KTP
+          </Text>
+        </TouchableOpacity>
       </View>
-
       {/* ===== Bottom Sheet Panduan e-KTP ===== */}
       <Actionsheet isOpen={openGuide} onClose={() => setOpenGuide(false)}>
         <ActionsheetBackdrop />
@@ -172,6 +193,6 @@ export default function KycIdConfirm() {
           </Button>
         </ActionsheetContent>
       </Actionsheet>
-    </SafeAreaView>
+    </View>
   );
 }
