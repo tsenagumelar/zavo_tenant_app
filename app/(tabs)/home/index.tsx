@@ -2,7 +2,24 @@
 import Screen from "@/components/layout/Screen";
 import { useUserStore } from "@/stores/useUserStore";
 import { useRouter } from "expo-router";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageBackground,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+/**
+ * NOTE: Desain dioptimalkan agar mirip screenshot:
+ * - Hero biru dengan ilustrasi di belakang + kartu greeting mengambang
+ * - Grid 3x2 fitur
+ * - Section "Layanan Rumah Terpercaya" cards horizontal (gambar besar)
+ * - Section "Belanja Murah" dengan kartu kecil + tombol plus melayang
+ * - Section "Berdasarkan kategori" tile pastel persegi membulat
+ * Asset ilustrasi bisa diganti ke asetmu sendiri; di sini placeholder local digunakan.
+ */
 
 const GRID = [
   { label: "Belanja", icon: "🛒" },
@@ -28,13 +45,6 @@ const SERVICES = [
     price: "Mulai dari Rp75.000/unit",
     img: "https://images.unsplash.com/photo-1573883431205-98b6a0d6c3d2?q=80&w=800&auto=format&fit=crop",
   },
-  {
-    id: "laund",
-    title: "Laundry",
-    vendor: "Washy Laundry",
-    price: "Mulai dari Rp25.000/kg",
-    img: "https://images.unsplash.com/photo-1581579188871-45ea61f2a0c8?q=80&w=800&auto=format&fit=crop",
-  },
 ];
 
 const GROCERIES = [
@@ -56,12 +66,6 @@ const GROCERIES = [
     price: "Rp7.500",
     img: "https://images.unsplash.com/photo-1541976076758-347942db1970?q=80&w=800&auto=format&fit=crop",
   },
-  {
-    id: "almn",
-    title: "Susu Almond Original 1L",
-    price: "Rp29.000",
-    img: "https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800&auto=format&fit=crop",
-  },
 ];
 
 const CATS = [
@@ -75,14 +79,13 @@ const CATS = [
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { name, hasUnit, kyc, unit } = useUserStore();
+  const { name, hasUnit, unit } = useUserStore();
 
-  // ===== VARIAN NEW USER =====
+  // Jika pengguna belum punya unit, biarkan varian lain menangani.
   if (!hasUnit) {
-    // tetap gunakan varian sebelumnya (sudah oke), atau pakai UI penghuni di bawah—pilih sesuai flowmu
+    // Biarkan route lain meng-handle tampilan new user.
   }
 
-  // ===== VARIAN PENGHUNI (match desain) =====
   const contractStr =
     unit?.contract &&
     `${new Date(unit.contract.start).toLocaleDateString("id-ID", {
@@ -101,32 +104,37 @@ export default function HomeScreen() {
         className="flex-1 bg-white"
         contentContainerStyle={{ paddingBottom: 28 }}
       >
-        {/* ===== Header Blue Hero ===== */}
-        <View className="bg-blue-50 pt-5 pb-16 px-4">
-          <View className="flex-row items-center justify-between">
-            <Image
-              source={require("@/assets/images/zavo.png")}
-              className="h-6 w-16"
-              resizeMode="contain"
-            />
-            <View className="flex-row items-center gap-3">
-              <TouchableOpacity className="p-2 rounded-full bg-white">
-                <Text>🔍</Text>
-              </TouchableOpacity>
-              <View className="relative">
-                <TouchableOpacity className="p-2 rounded-full bg-white">
-                  <Text>🔔</Text>
+        {/* ===== Header Blue Hero dengan ilustrasi ===== */}
+        <View className="bg-blue-50 pt-5 pb-16">
+          <ImageBackground
+            source={require("@/assets/images/react-logo.png")}
+            imageStyle={{ resizeMode: "cover" }}
+            className="px-4"
+          >
+            <View className="flex-row items-center justify-between">
+              <Image
+                source={require("@/assets/images/zavo.png")}
+                className="h-6 w-16"
+                resizeMode="contain"
+              />
+              <View className="flex-row items-center gap-3">
+                <TouchableOpacity className="p-2 rounded-full bg-white/90">
+                  <Text>🔍</Text>
                 </TouchableOpacity>
-                {/* badge notif */}
-                <View className="absolute -top-1 -right-1 bg-blue-600 rounded-full px-1.5">
-                  <Text className="text-white text-[10px] font-bold">9+</Text>
+                <View className="relative">
+                  <TouchableOpacity className="p-2 rounded-full bg-white/90">
+                    <Text>🔔</Text>
+                  </TouchableOpacity>
+                  <View className="absolute -top-1 -right-1 bg-blue-600 rounded-full px-1.5">
+                    <Text className="text-white text-[10px] font-bold">9+</Text>
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
+          </ImageBackground>
         </View>
 
-        {/* ===== Greeting Card floating ===== */}
+        {/* ===== Greeting Card mengambang ===== */}
         <View className="px-4 -mt-10">
           <View className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
             <View className="flex-row items-center justify-between">
@@ -144,7 +152,6 @@ export default function HomeScreen() {
                   {contractStr || "10 Jan 2025 - 10 Jan 2026"}
                 </Text>
               </View>
-              {/* avatar */}
               <View className="w-12 h-12 rounded-full bg-blue-100 items-center justify-center">
                 <Text>👩🏻</Text>
               </View>
@@ -152,7 +159,7 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* ===== Feature Grid 3×2 ===== */}
+        {/* ===== Feature Grid 3×2 dengan ikon ===== */}
         <View className="px-4 mt-4">
           <View className="flex-row flex-wrap justify-between">
             {GRID.map((g) => (
@@ -161,19 +168,22 @@ export default function HomeScreen() {
                 className="w-[31%] items-center mb-6"
                 onPress={() => {
                   if (g.label === "Tagihan") router.push("/bills");
+                  if (g.label === "Fasilitas") router.push("/facility");
                 }}
               >
                 <View className="w-14 h-14 rounded-2xl bg-white border border-gray-100 items-center justify-center shadow-sm">
                   <Text className="text-xl">{g.icon}</Text>
                 </View>
-                <Text className="text-gray-700 mt-2">{g.label}</Text>
+                <Text className="text-gray-700 mt-2 text-center text-[12px]">
+                  {g.label}
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
         </View>
 
-        {/* ===== Services (horizontal) ===== */}
-        <View className="px-4 mt-0">
+        {/* ===== Layanan Rumah Terpercaya: horizontal cards ===== */}
+        <View className="px-4">
           <View className="flex-row items-center justify-between mb-2">
             <Text className="font-bold text-base">
               Layanan Rumah Terpercaya
@@ -184,7 +194,7 @@ export default function HomeScreen() {
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className="flex-row gap-3">
+            <View className="flex-row gap-3 pr-2">
               {SERVICES.map((s) => (
                 <TouchableOpacity key={s.id} className="w-56">
                   <View className="rounded-xl overflow-hidden bg-white border border-gray-100">
@@ -201,8 +211,8 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* ===== Groceries (horizontal small cards) ===== */}
-        <View className="px-4 mt-5">
+        {/* ===== Belanja Murah: header + product tiles horizontal ===== */}
+        <View className="px-4 mt-4">
           <View className="flex-row items-center justify-between mb-2">
             <View>
               <Text className="font-bold text-base">Belanja Murah</Text>
@@ -214,18 +224,17 @@ export default function HomeScreen() {
           </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className="flex-row gap-3">
+            <View className="flex-row gap-3 pr-2">
               {GROCERIES.map((p) => (
                 <View
                   key={p.id}
-                  className="w-32 rounded-xl border border-gray-100 bg-white"
+                  className="w-36 rounded-2xl border border-gray-100 bg-white"
                 >
                   <View className="relative">
                     <Image
                       source={{ uri: p.img }}
-                      className="w-full h-28 rounded-t-xl"
+                      className="w-full h-28 rounded-t-2xl"
                     />
-                    {/* tombol plus */}
                     <TouchableOpacity className="absolute -bottom-3 right-2 w-8 h-8 rounded-full bg-blue-600 items-center justify-center shadow">
                       <Text className="text-white text-lg">＋</Text>
                     </TouchableOpacity>
@@ -242,15 +251,30 @@ export default function HomeScreen() {
           </ScrollView>
         </View>
 
-        {/* ===== Categories (horizontal pills with icons) ===== */}
-        <View className="px-4 mt-5">
-          <Text className="font-semibold mb-2">Berdasarkan kategori</Text>
+        {/* ===== Berdasarkan kategori ===== */}
+        <View className="px-4 mt-4 mb-2">
+          <View className="flex-row items-center justify-between mb-2">
+            <Text className="font-semibold">Berdasarkan kategori</Text>
+            <TouchableOpacity>
+              <View className="w-6 h-6 rounded-full bg-blue-600 items-center justify-center">
+                <Text className="text-white">＋</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View className="flex-row gap-3">
-              {CATS.map((c) => (
+            <View className="flex-row gap-3 pr-2">
+              {CATS.map((c, idx) => (
                 <TouchableOpacity key={c.name} className="items-center">
-                  <View className="w-14 h-14 rounded-2xl bg-white border border-gray-100 items-center justify-center">
-                    <Text className="text-xl">{c.icon}</Text>
+                  <View
+                    className={`w-16 h-16 rounded-2xl items-center justify-center ${
+                      idx % 3 === 0
+                        ? "bg-green-50"
+                        : idx % 3 === 1
+                        ? "bg-yellow-50"
+                        : "bg-blue-50"
+                    }`}
+                  >
+                    <Text className="text-2xl">{c.icon}</Text>
                   </View>
                   <Text className="text-gray-700 mt-2 text-xs">{c.name}</Text>
                 </TouchableOpacity>
